@@ -1,0 +1,17 @@
+Play-jongo:
+https://github.com/yudu-haiou/play_mongo_rest_post
+
+curl -H "Content-Type: application/json" -X POST -d '{"name":"newHospital"}' http://localhost:9000/saveHospital
+
+**************************************************************************
+
+MongoDb: https://docs.mongodb.com/manual/tutorial/enable-authentication/
+db.createUser(
+  {
+    user: "myUserAdmin",
+    pwd: "abc123",
+    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+  }
+)
+
+db.auth({user:"playuser",pwd:"playuser",mechanism:"MSCRAM-SHA-1",digestPassword:false})
