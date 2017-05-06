@@ -1,0 +1,6 @@
+
+POST    /saveHospital              controllers.HospitalsController.saveHospital
+
+GET     /save                      controllers.CarsController.save
+
+GET     /saveAsync                 controllers.CarsController.saveAsync
