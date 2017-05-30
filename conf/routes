@@ -4,3 +4,11 @@ POST    /saveHospital              controllers.HospitalsController.saveHospital
 GET     /save                      controllers.CarsController.save
 
 GET     /saveAsync                 controllers.CarsController.saveAsync
+
+POST    /saveHealthCheckSets       controllers.HealthCheckSetsController.saveHealthCheckSets
+
+GET     /healthCheckSets/:id       controllers.HealthCheckSetsController.getHealthCheckSetsById(id: Long)
+
+POST    /saveHealthCheckSetItems   controllers.HealthCheckSetItemsController.saveHealthCheckSetItems
+
+GET    /healthCheckSetItems/:name  controllers.HealthCheckSetItemsController.getHealthCheckSetsByName(name: String)

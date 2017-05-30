@@ -6,12 +6,32 @@ curl -H "Content-Type: application/json" -X POST -d '{"name":"newHospital"}' htt
 **************************************************************************
 
 MongoDb: https://docs.mongodb.com/manual/tutorial/enable-authentication/
-db.createUser(
-  {
-    user: "myUserAdmin",
-    pwd: "abc123",
-    roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
-  }
-)
+db.createUser({user: "newUserAdmin", pwd: "abc123",roles: [ { role:"userAdminAnyDatabase", db: "admin" } ]})
 
-db.auth({user:"playuser",pwd:"playuser",mechanism:"MSCRAM-SHA-1",digestPassword:false})
+sudo mongod --auth
+
+sudo mongo -u "newUserAdmin" -p "abc123" --authenticationDatabase "admin"
+
+db.createUser({user: "play2db",pwd: "play2db",roles: [ { role: "readWrite",db: "play2db" }]})
+
+sudo mongo -u "play2db" -p "play2db" --authenticationDatabase "play2db"
+
+use play2db
+
+db.auth("play2db", "play2db" )
+
+
+*****************************
+
+db.healthchecksets.insert({_id:1,name:"set1"});
+db.healthchecksets.insert({_id:2,name:"set2"});
+db.healthchecksets.insert({_id:3,name:"set3"});
+db.healthchecksets.insert({_id:4,name:"set4"});
+
+db.healthchecksetitems.insert({name:"item1", sets:[1,2]});
+db.healthchecksetitems.insert({name:"item2", sets:[1,3]});
+db.healthchecksetitems.update({name:"item2"},{$addToSet:{sets:{$each:[2,4]}}})
+
+
+*******************************
+Debuging SBT
