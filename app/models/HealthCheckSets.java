@@ -1,6 +1,7 @@
 package models;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.bson.types.ObjectId;
 import org.jongo.MongoCollection;
 import play.api.Play;
 import uk.co.panaxiom.playjongo.PlayJongo;
@@ -17,15 +18,14 @@ public class HealthCheckSets {
 
     public HealthCheckSets() {}
 
-    public HealthCheckSets(long id, String name) {
-        this.id = id;
+    public HealthCheckSets(long setId, String name) {
+        this.setId = setId;
         this.name = name;
     }
 
-    @JsonProperty("_id")
-    public long id;
-
     public String name;
+
+    public long setId;
 
     public HealthCheckSets insert() {
         healthCheckSets().save(this);
@@ -41,13 +41,17 @@ public class HealthCheckSets {
                 .class);
     }
 
-    public static HealthCheckSets findById(long id) {
-        return healthCheckSets().findOne("{_id: #}", id).as(HealthCheckSets
+    public static HealthCheckSets findBySetId(long setId) {
+        return healthCheckSets().findOne("{setId: #}", setId).as(HealthCheckSets
                 .class);
+    }
+
+    public static void updateHealthCheckSetId(long oldId, long newId) {
+        healthCheckSets().update("{setId: #}", oldId).with("{$set:{setId: #}}", newId);
     }
 
     @Override
     public String toString() {
-        return "HealthCheckSets id: " + this.id + ", name: " + this.name;
+        return "HealthCheckSets setId: " + this.setId + ", name: " + this.name;
     }
 }

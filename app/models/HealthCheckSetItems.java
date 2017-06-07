@@ -1,6 +1,7 @@
 package models;
 
 import org.jongo.MongoCollection;
+import org.jongo.MongoCursor;
 import play.api.Play;
 import uk.co.panaxiom.playjongo.PlayJongo;
 
@@ -40,6 +41,14 @@ public class HealthCheckSetItems  {
     public static HealthCheckSetItems findByName(String name) {
         return healthchecksetitems().findOne("{name: #}", name).as(HealthCheckSetItems
                 .class);
+    }
+
+    public static MongoCursor<HealthCheckSetItems> findBySetsId(long id) {
+       return healthchecksetitems().find("{sets:{$elemMatch:{$eq:#}}}", id).as(HealthCheckSetItems.class);
+    }
+
+    public static void updateHealthCheckItemSetIds(long oldId, long newId) {
+        healthchecksetitems().update("{sets:{$elemMatch:{$eq:#}}}", oldId).multi().with("{$set:{'sets.$':#}}", newId);
     }
 
     @Override

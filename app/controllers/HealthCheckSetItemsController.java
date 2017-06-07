@@ -3,6 +3,7 @@ package controllers;
 import com.fasterxml.jackson.databind.JsonNode;
 import models.HealthCheckSetItems;
 import models.HealthCheckSets;
+import org.jongo.MongoCursor;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
@@ -32,6 +33,18 @@ public class HealthCheckSetItemsController extends Controller {
         }, ec.current()).thenApply(i -> ok("Got result: " + i));
     }
 
+    public CompletionStage<Result> getHealthCheckSetItemsBySetsId(Long id) {
+        return CompletableFuture.supplyAsync(() -> {
+            MongoCursor<HealthCheckSetItems> cursor = HealthCheckSetItems.findBySetsId(id);
+            StringBuffer sb = new StringBuffer();
+            while (cursor.hasNext()) {
+                sb.append((HealthCheckSetItems) cursor.next()).toString();
+            }
+            return null != sb ? sb.toString() : "Empty result!";
+        },ec.current()).thenApply(i -> ok("Got result: " + i));
+
+    }
+
     public CompletionStage<Result> getHealthCheckSetsByName(String name) {
         return CompletableFuture.supplyAsync(() -> {
             HealthCheckSetItems healthCheckSetItems = HealthCheckSetItems.findByName(name);
@@ -40,7 +53,7 @@ public class HealthCheckSetItemsController extends Controller {
                 sb.append(healthCheckSetItems.toString());
                 sb.append(System.lineSeparator());
                 healthCheckSetItems.sets.stream().forEach(id -> {
-                    HealthCheckSets healthCheckSets = HealthCheckSets.findById(id);
+                    HealthCheckSets healthCheckSets = HealthCheckSets.findBySetId(id);
                     sb.append(healthCheckSets.toString());
                     sb.append(System.lineSeparator());
                 });

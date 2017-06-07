@@ -11,4 +11,8 @@ GET     /healthCheckSets/:id       controllers.HealthCheckSetsController.getHeal
 
 POST    /saveHealthCheckSetItems   controllers.HealthCheckSetItemsController.saveHealthCheckSetItems
 
-GET    /healthCheckSetItems/:name  controllers.HealthCheckSetItemsController.getHealthCheckSetsByName(name: String)
+GET    /healthCheckSetItems/name/:name  controllers.HealthCheckSetItemsController.getHealthCheckSetsByName(name: String)
+
+GET    /healthCheckSetItems/id/:id  controllers.HealthCheckSetItemsController.getHealthCheckSetItemsBySetsId(id: Long)
+
+POST    /healthCheckSets/updateSetsId  controllers.HealthCheckSetsController.updateHealthCheckSetsId

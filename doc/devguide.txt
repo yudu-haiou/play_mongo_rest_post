@@ -20,18 +20,35 @@ use play2db
 
 db.auth("play2db", "play2db" )
 
+ps wuax | grep mongo
+
+sudo kill -9
 
 *****************************
 
-db.healthchecksets.insert({_id:1,name:"set1"});
-db.healthchecksets.insert({_id:2,name:"set2"});
-db.healthchecksets.insert({_id:3,name:"set3"});
-db.healthchecksets.insert({_id:4,name:"set4"});
+db.healthchecksets.insert({setId:1,name:"set1"});
+db.healthchecksets.insert({setId:2,name:"set2"});
+db.healthchecksets.insert({setId:3,name:"set3"});
+db.healthchecksets.insert({setId:4,name:"set4"});
+db.healthchecksets.insert({setId:5,name:"set5"});
+db.healthchecksets.insert({setId:6,name:"set6"});
 
 db.healthchecksetitems.insert({name:"item1", sets:[1,2]});
 db.healthchecksetitems.insert({name:"item2", sets:[1,3]});
 db.healthchecksetitems.update({name:"item2"},{$addToSet:{sets:{$each:[2,4]}}})
 
+db.healthchecksetitems.find({sets:{$elemMatch:{$eq:1}}});
+db.healthchecksetitems.update({sets:{$elemMatch:{$eq:1}}},{$set:{"sets.$":5}});
+db.healthchecksetitems.update({sets:{$elemMatch:{$eq:2}}},{$set:{"sets.$":6}}, {multi:true});
+
 
 *******************************
 Debuging SBT
+
+export SBT_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005" && sbt run
+
+
+*******************************
+curl -H "Content-Type: application/json" -X POST -d '{"setId":8,"name":"set8"}' http://localhost:9000/saveHealthCheckSets
+
+curl -H "Content-Type: application/json" -X POST -d '{"oldId":6,"newId":9}' http://localhost:9000/healthCheckSets/updateSetsId

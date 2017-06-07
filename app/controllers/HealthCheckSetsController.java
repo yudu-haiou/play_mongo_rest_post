@@ -1,11 +1,14 @@
 package controllers;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import models.HealthCheckSetItems;
 import models.HealthCheckSets;
 import play.libs.Json;
 import play.libs.concurrent.HttpExecutionContext;
 import play.mvc.Controller;
 import play.mvc.Result;
+import util.OldNewIds;
+
 import javax.inject.Inject;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
@@ -31,8 +34,18 @@ public class HealthCheckSetsController extends Controller {
     }
 
     public CompletionStage<Result> getHealthCheckSetsById(Long id) {
-        return CompletableFuture.supplyAsync(() -> HealthCheckSets.findById(id),
+        return CompletableFuture.supplyAsync(() -> HealthCheckSets.findBySetId(id),
                 ec.current()).thenApply(i -> ok("Got result: " + i));
+    }
+
+    public CompletionStage<Result> updateHealthCheckSetsId() {
+        return CompletableFuture.supplyAsync(() -> {
+            JsonNode json = request().body().asJson();
+            final OldNewIds ids = Json.fromJson(json, OldNewIds.class);
+            HealthCheckSets.updateHealthCheckSetId(ids.getOldId(), ids.getNewId());
+            HealthCheckSetItems.updateHealthCheckItemSetIds(ids.getOldId(), ids.getNewId());
+            return HealthCheckSetItems.findBySetsId(ids.getNewId());
+        }, ec.current()).thenApply(i -> ok("Got result: " + i));
     }
 }
 
